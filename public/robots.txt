@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /paiement/
+Disallow: /compte/profil/
+Sitemap: https://immo-faala.vercel.app/sitemap.xml
