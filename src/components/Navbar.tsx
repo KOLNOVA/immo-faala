@@ -1,22 +1,12 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
+import { auth, signOut } from "@/lib/auth";
+import MobileMenu from "@/components/MobileMenu";
 
 export default async function Navbar() {
-  // Vérifier si un cookie de session existe avant d'appeler auth()
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("authjs.session-token") || cookieStore.get("__Secure-authjs.session-token");
-  
   let session = null;
-  
-  if (sessionCookie) {
-    // Importer dynamiquement pour éviter l'erreur si pas de cookie
-    const { auth } = await import("@/lib/auth");
-    try {
-      session = await auth();
-    } catch (e) {
-      // Cookie invalide - sera nettoyé naturellement
-    }
-  }
+  try {
+    session = await auth();
+  } catch (e) {}
 
   return (
     <nav className="navbar">
@@ -30,27 +20,15 @@ export default async function Navbar() {
         </Link>
         <div className="nav-links">
           <Link href="/recherche">Rechercher</Link>
-          <Link href="/villes">Villes</Link>
-          <Link href="/blog">Blog</Link>
-          <Link href="/calculateur">🧮 Budget</Link>
-          <Link href="/prix">💰 Prix</Link>
-          <Link href="/guide">📖 Guide</Link>
-          <Link href="/favoris">❤️ Favoris</Link>
-          <Link href="/comparateur">📊 Comparer</Link>
-          <Link href="/carte">🗺️ Carte</Link>
           {session ? (
             <>
-              <Link href="/dashboard">Mon Dashboard</Link>
+              <Link href="/dashboard">Dashboard</Link>
               {session.user?.isAdmin && (
                 <Link href="/zeus" style={{ fontSize: "0.01em", color: "transparent", position: "absolute", left: "-9999px" }}>
                   Admin
                 </Link>
               )}
-              <form action={async () => { 
-                "use server"; 
-                const { signOut } = await import("@/lib/auth");
-                await signOut({ redirectTo: "/" }); 
-              }}>
+              <form action={async () => { "use server"; await signOut({ redirectTo: "/" }) }}>
                 <button type="submit" style={{ background: "none", border: "none", color: "#a8c8e8", cursor: "pointer", fontSize: "0.95em" }}>
                   Déconnexion
                 </button>
@@ -62,6 +40,7 @@ export default async function Navbar() {
               <Link href="/compte/inscription">S&apos;inscrire</Link>
             </>
           )}
+          <MobileMenu />
         </div>
       </div>
     </nav>
