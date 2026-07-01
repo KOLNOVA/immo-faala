@@ -17,8 +17,7 @@ export async function uploadImage(file: File, folder: string = "immo-faala"): Pr
       resource_type: "auto",
       transformation: [
         { width: 1200, height: 1200, crop: "limit" },
-        { quality: "auto" },
-        { fetch_format: "auto" },
+        { quality: "auto", fetch_format: "auto" },
       ],
     })
 
@@ -31,11 +30,9 @@ export async function uploadImage(file: File, folder: string = "immo-faala"): Pr
 
 export async function uploadMultipleImages(files: File[], folder: string = "immo-faala"): Promise<string[]> {
   const urls: string[] = []
-
   for (const file of files.slice(0, 5)) {
     const url = await uploadImage(file, folder)
     if (url) urls.push(url)
   }
-
   return urls
 }
