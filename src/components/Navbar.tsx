@@ -32,6 +32,7 @@ export default async function Navbar() {
           <Link href="/recherche">Rechercher</Link>
           <Link href="/villes">Villes</Link>
           <Link href="/blog">Blog</Link>
+          <Link href="/favoris">❤️ Favoris</Link>
           {session ? (
             <>
               <Link href="/dashboard">Mon Dashboard</Link>
