@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth"
 import { supabase } from "@/lib/supabase"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import DashboardChart from "@/components/DashboardChart"
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -22,6 +23,7 @@ export default async function DashboardPage() {
   const activeCount = listings?.filter((l: any) => l.status === "active").length || 0
   const pendingCount = listings?.filter((l: any) => l.status === "pending").length || 0
   const totalViews = listings?.reduce((sum: number, l: any) => sum + (l.viewsCount || 0), 0) || 0
+  const maxViews = Math.max(...(listings?.map((l: any) => l.viewsCount || 0) || [1]), 1)
 
   return (
     <div className="dashboard">
@@ -34,6 +36,10 @@ export default async function DashboardPage() {
         <div className="stat-card"><h3>{totalViews}</h3><p>Vues totales</p></div>
       </div>
 
+      {listings && listings.length > 0 && (
+        <DashboardChart listings={listings} maxViews={maxViews} />
+      )}
+
       <div className="account-actions" style={{ marginBottom: 30, display: "flex", gap: 15, flexWrap: "wrap" }}>
         {!user?.isPremium ? (
           <>
@@ -43,7 +49,6 @@ export default async function DashboardPage() {
         ) : (
           <span className="btn btn-success" style={{ cursor: "default", background: "#27ae60", color: "white" }}>🏅 Premium</span>
         )}
-
         <Link href="/compte/profil" className="btn btn-secondary">👤 Modifier mon profil</Link>
         <Link href="/publier" className="btn btn-primary">Publier une annonce</Link>
       </div>
