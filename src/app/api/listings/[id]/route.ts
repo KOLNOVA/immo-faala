@@ -30,3 +30,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   if (error) return Response.json({ error: error.message }, { status: 500 })
   return Response.json({ success: true })
 }
+
+// Ajouter dans la fonction POST de report (signalement)
+// Envoyer une notification à l'admin
+// await sendAdminNotification("Nouveau signalement", `L'annonce ${listingId} a été signalée`)

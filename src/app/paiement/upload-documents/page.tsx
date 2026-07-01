@@ -1,4 +1,33 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function UploadDocsPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+
+    const res = await fetch("/api/user/upload-docs", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (res.ok) {
+      setMessage("✅ Documents envoyés avec succès !");
+      setTimeout(() => router.push("/dashboard"), 2000);
+    } else {
+      setMessage("❌ Erreur lors de l'envoi.");
+    }
+    setLoading(false);
+  }
+
   return (
     <div className="form-container">
       <h1>Vérification du Compte</h1>
@@ -6,7 +35,7 @@ export default function UploadDocsPage() {
         <p style={{ marginBottom: 20 }}>
           Pour obtenir le Badge Premium, téléchargez votre pièce d&apos;identité et un selfie.
         </p>
-        <form action="/api/user/upload-docs" method="POST" encType="multipart/form-data">
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Pièce d&apos;identité (Carte, Passeport, Permis)</label>
             <input type="file" name="id_document" accept="image/*" className="form-input" required />
@@ -15,8 +44,13 @@ export default function UploadDocsPage() {
             <label>Selfie (photo de vous)</label>
             <input type="file" name="selfie" accept="image/*" className="form-input" required />
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: "100%" }}>
-            Envoyer pour vérification
+          {message && (
+            <p style={{ color: message.includes("✅") ? "#27ae60" : "#e74c3c", textAlign: "center", marginBottom: 10 }}>
+              {message}
+            </p>
+          )}
+          <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={loading}>
+            {loading ? "Envoi..." : "Envoyer pour vérification"}
           </button>
         </form>
         <p style={{ marginTop: 15 }}>
@@ -24,5 +58,5 @@ export default function UploadDocsPage() {
         </p>
       </div>
     </div>
-  )
+  );
 }
