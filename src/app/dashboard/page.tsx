@@ -51,6 +51,7 @@ export default async function DashboardPage() {
         )}
         <Link href="/compte/profil" className="btn btn-secondary">👤 Modifier mon profil</Link>
         <Link href="/publier" className="btn btn-primary">Publier une annonce</Link>
+            <a href="/api/export" className="btn btn-secondary">📥 Exporter mes annonces (CSV)</a>
       </div>
 
       <div className="listings-table">
