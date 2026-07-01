@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { supabase } from "@/lib/supabase"
 import bcrypt from "bcryptjs"
 
+const loginAttempts = new Map<string, { count: number; lastAttempt: number }>()
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   providers: [
@@ -15,16 +17,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.phone || !credentials?.password) return null
 
+        // Vérifier les tentatives
+        const attempt = loginAttempts.get(credentials.phone as string)
+        const now = Date.now()
+        if (attempt) {
+          if (attempt.count >= 5 && now - attempt.lastAttempt < 15 * 60 * 1000) {
+            throw new Error("Trop de tentatives. Réessayez dans 15 minutes.")
+          }
+          if (now - attempt.lastAttempt > 15 * 60 * 1000) {
+            loginAttempts.delete(credentials.phone as string)
+          }
+        }
+
         const { data: user } = await supabase
           .from("User")
           .select("*")
           .eq("phone", credentials.phone as string)
           .single()
 
-        if (!user || !user.passwordHash || !user.isActive) return null
+        if (!user || !user.passwordHash || !user.isActive) {
+          const current = loginAttempts.get(credentials.phone as string) || { count: 0, lastAttempt: now }
+          loginAttempts.set(credentials.phone as string, { count: current.count + 1, lastAttempt: now })
+          return null
+        }
 
         const passwordMatch = await bcrypt.compare(credentials.password as string, user.passwordHash)
-        if (!passwordMatch) return null
+        if (!passwordMatch) {
+          const current = loginAttempts.get(credentials.phone as string) || { count: 0, lastAttempt: now }
+          loginAttempts.set(credentials.phone as string, { count: current.count + 1, lastAttempt: now })
+          return null
+        }
+
+        loginAttempts.delete(credentials.phone as string)
 
         return {
           id: user.id,
@@ -36,7 +60,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     })
   ],
-  session: { strategy: "jwt", maxAge: 7 * 24 * 60 * 60 },
+  session: { strategy: "jwt", maxAge: 30 * 60 },
   pages: { signIn: "/compte/connexion" },
   callbacks: {
     async jwt({ token, user }) {
