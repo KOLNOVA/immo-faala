@@ -32,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PWAProvider />
         <Navbar />
         <main className="flex-1">{children}</main>
+        <ExitPopup />
         <Footer />
       </body>
     </html>

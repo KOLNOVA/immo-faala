@@ -76,6 +76,7 @@ export default async function DashboardPage() {
                     </span>
                   </td>
                   <td>{new Date(listing.createdAt).toLocaleDateString("fr-FR")}</td>
+                    <td><BoostSuggestion listingId={listing.id} viewsCount={listing.viewsCount || 0} /></td>
                   <td>
                     {listing.status === "pending" ? (
                       <Link href={`/activer/${listing.id}`} className="btn btn-small btn-success">Activer</Link>
