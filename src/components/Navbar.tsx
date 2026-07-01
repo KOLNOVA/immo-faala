@@ -32,6 +32,7 @@ export default async function Navbar() {
           <Link href="/recherche">Rechercher</Link>
           <Link href="/villes">Villes</Link>
           <Link href="/blog">Blog</Link>
+          <Link href="/calculateur">🧮 Budget</Link>
           <Link href="/favoris">❤️ Favoris</Link>
           <Link href="/comparateur">📊 Comparer</Link>
           <Link href="/carte">🗺️ Carte</Link>
