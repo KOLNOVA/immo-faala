@@ -1,0 +1,22 @@
+{
+  "name": "Immo-Faala",
+  "short_name": "Immo-Faala",
+  "description": "Trouvez votre logement sans intermédiaires abusifs en Afrique de l'Ouest",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a2a3a",
+  "theme_color": "#1a2a3a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/logo-icon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/images/logo-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
