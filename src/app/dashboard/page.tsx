@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import DashboardChart from "@/components/DashboardChart"
+import BoostSuggestion from "@/components/BoostSuggestion"
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -51,7 +52,7 @@ export default async function DashboardPage() {
         )}
         <Link href="/compte/profil" className="btn btn-secondary">👤 Modifier mon profil</Link>
         <Link href="/publier" className="btn btn-primary">Publier une annonce</Link>
-            <a href="/api/export" className="btn btn-secondary">📥 Exporter mes annonces (CSV)</a>
+        <a href="/api/export" className="btn btn-secondary">📥 Exporter mes annonces (CSV)</a>
       </div>
 
       <div className="listings-table">
@@ -60,7 +61,7 @@ export default async function DashboardPage() {
           <table>
             <thead>
               <tr>
-                <th>Titre</th><th>Prix</th><th>Ville</th><th>Vues</th><th>Statut</th><th>Date</th><th>Actions</th>
+                <th>Titre</th><th>Prix</th><th>Ville</th><th>Vues</th><th>Statut</th><th>Date</th><th>Suggestion</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -76,7 +77,9 @@ export default async function DashboardPage() {
                     </span>
                   </td>
                   <td>{new Date(listing.createdAt).toLocaleDateString("fr-FR")}</td>
-                    <td><BoostSuggestion listingId={listing.id} viewsCount={listing.viewsCount || 0} /></td>
+                  <td>
+                    <BoostSuggestion listingId={listing.id} viewsCount={listing.viewsCount || 0} />
+                  </td>
                   <td>
                     {listing.status === "pending" ? (
                       <Link href={`/activer/${listing.id}`} className="btn btn-small btn-success">Activer</Link>
