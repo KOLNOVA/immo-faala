@@ -42,16 +42,22 @@ export async function createTransaction(amount: number, customer: { name: string
 
     const data = await response.json()
 
-    if (data.status === "approved") {
-      return { success: true, transactionId: data.id, message: "Paiement approuvé" }
+    // Si la réponse contient un id de transaction
+    if (data.id) {
+      if (data.status === "approved") {
+        return { success: true, transactionId: data.id, message: "Paiement approuvé" }
+      }
+      // Transaction créée mais en attente de paiement
+      return {
+        success: false,
+        transactionId: data.id,
+        paymentUrl: data.payment_url,
+        message: "Redirection vers Fedapay...",
+      }
     }
 
-    return {
-      success: false,
-      transactionId: data.id,
-      paymentUrl: data.payment_url,
-      message: "Redirection vers Fedapay...",
-    }
+    // Si erreur de validation
+    return { success: false, message: data.message || "Erreur Fedapay" }
   } catch (error: any) {
     return { success: false, message: error.message || "Erreur de paiement" }
   }

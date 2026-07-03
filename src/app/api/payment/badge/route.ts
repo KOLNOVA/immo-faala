@@ -6,6 +6,7 @@ export async function POST() {
   const session = await auth()
   if (!session) return Response.json({ error: "Non connecté" }, { status: 401 })
 
+  console.log("Creating transaction for", session.user?.phone)
   const result = await createTransaction(
     500,
     {
@@ -15,6 +16,7 @@ export async function POST() {
     },
     `${process.env.SITE_URL}/paiement/callback`
   )
+  console.log("Transaction result:", result)
 
   if (result.success) {
     await supabase.from("User").update({
