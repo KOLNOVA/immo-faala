@@ -9,6 +9,13 @@ export async function createTransaction(amount: number, customer: { name: string
     }
   }
 
+  // Formater le numéro de téléphone au format international
+  let phone = customer.phone.replace(/\s+/g, '').replace(/^\+/, '')
+  if (!phone.startsWith('229')) {
+    phone = '229' + phone
+  }
+  phone = '+' + phone
+
   try {
     const response = await fetch("https://api.fedapay.com/v1/transactions", {
       method: "POST",
@@ -22,11 +29,11 @@ export async function createTransaction(amount: number, customer: { name: string
         description: "Immo-Faala - Service Premium",
         callback_url: callbackUrl,
         customer: {
-          firstname: customer.name,
-          lastname: "Client",
+          firstname: customer.name || "Client",
+          lastname: "ImmoFaala",
           email: customer.email,
           phone_number: {
-            number: customer.phone,
+            number: phone,
             country: "bj",
           },
         },
