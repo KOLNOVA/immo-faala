@@ -9,11 +9,8 @@ export async function createTransaction(amount: number, customer: { name: string
     }
   }
 
-  // Formater le numéro de téléphone au format international
   let phone = customer.phone.replace(/\s+/g, '').replace(/^\+/, '')
-  if (!phone.startsWith('229')) {
-    phone = '229' + phone
-  }
+  if (!phone.startsWith('229')) phone = '229' + phone
   phone = '+' + phone
 
   try {
@@ -41,22 +38,20 @@ export async function createTransaction(amount: number, customer: { name: string
     })
 
     const data = await response.json()
+    const tx = data["v1/transaction"] || data
 
-    // Si la réponse contient un id de transaction
-    if (data.id) {
-      if (data.status === "approved") {
-        return { success: true, transactionId: data.id, message: "Paiement approuvé" }
+    if (tx.id) {
+      if (tx.status === "approved") {
+        return { success: true, transactionId: tx.id, message: "Paiement approuvé" }
       }
-      // Transaction créée mais en attente de paiement
       return {
         success: false,
-        transactionId: data.id,
-        paymentUrl: data.payment_url,
+        transactionId: tx.id,
+        paymentUrl: tx.payment_url,
         message: "Redirection vers Fedapay...",
       }
     }
 
-    // Si erreur de validation
     return { success: false, message: data.message || "Erreur Fedapay" }
   } catch (error: any) {
     return { success: false, message: error.message || "Erreur de paiement" }
@@ -76,7 +71,8 @@ export async function verifyTransaction(transactionId: string) {
       },
     })
     const data = await response.json()
-    return { success: true, status: data.status }
+    const tx = data["v1/transaction"] || data
+    return { success: true, status: tx.status }
   } catch (error: any) {
     return { success: false, message: error.message }
   }
