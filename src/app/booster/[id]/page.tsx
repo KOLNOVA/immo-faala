@@ -3,11 +3,12 @@ import { supabase } from "@/lib/supabase"
 import { redirect } from "next/navigation"
 import BoostButton from "@/components/BoostButton"
 
-export default async function BoostPage({ params }: { params: { id: string } }) {
+export default async function BoostPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await auth()
   if (!session) redirect("/compte/connexion")
 
-  const { data: listing } = await supabase.from("Listing").select("*").eq("id", params.id).single()
+  const { data: listing } = await supabase.from("Listing").select("*").eq("id", id).single()
   if (!listing || listing.ownerId !== session.user.id || listing.status !== "active") redirect("/dashboard")
 
   return (
