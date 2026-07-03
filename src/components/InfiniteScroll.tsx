@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 interface Listing {
@@ -30,13 +30,46 @@ export default function InfiniteScroll({
   const [hasNext, setHasNext] = useState(hasMore);
   const [loading, setLoading] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
+
+  const loadMore = useCallback(async () => {
+    if (loadingRef.current || !hasNext) return;
+    loadingRef.current = true;
+    setLoading(true);
+
+    const params = new URLSearchParams();
+    params.append("page", page.toString());
+    if (searchParams) {
+      Object.entries(searchParams).forEach(([k, v]) => {
+        if (v) params.append(k, v);
+      });
+    }
+
+    try {
+      const res = await fetch(`/api/listings?${params.toString()}`);
+      const data = await res.json();
+
+      if (data.listings?.length > 0) {
+        setListings((prev) => [...prev, ...data.listings]);
+        setPage((p) => p + 1);
+        setHasNext(data.hasMore);
+      } else {
+        setHasNext(false);
+      }
+    } catch (e) {
+      console.error("Erreur chargement:", e);
+    }
+
+    setLoading(false);
+    loadingRef.current = false;
+  }, [page, hasNext, searchParams]);
 
   useEffect(() => {
     if (!hasNext || !sentinelRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasNext && !loading) {
+        if (entries[0].isIntersecting && hasNext && !loadingRef.current) {
           loadMore();
         }
       },
@@ -45,31 +78,7 @@ export default function InfiniteScroll({
 
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [hasNext, loading, page]);
-
-  async function loadMore() {
-    setLoading(true);
-
-    const params = new URLSearchParams();
-    if (searchParams) {
-      Object.entries(searchParams).forEach(([k, v]) => {
-        if (v) params.append(k, v);
-      });
-    }
-    params.append("page", page.toString());
-
-    const res = await fetch(`/api/listings?${params.toString()}`);
-    const data = await res.json();
-
-    if (data.listings?.length > 0) {
-      setListings((prev) => [...prev, ...data.listings]);
-      setPage((p) => p + 1);
-      setHasNext(data.hasMore);
-    } else {
-      setHasNext(false);
-    }
-    setLoading(false);
-  }
+  }, [hasNext, loadMore]);
 
   return (
     <>
@@ -95,8 +104,8 @@ export default function InfiniteScroll({
         )}
       </div>
 
-      {hasNext && (
-        <div className="loading-indicator" style={{ display: loading ? "block" : "none" }}>
+      {loading && (
+        <div className="loading-indicator" style={{ display: "block" }}>
           <div className="spinner"></div>
           <p>Chargement d&apos;autres annonces...</p>
         </div>

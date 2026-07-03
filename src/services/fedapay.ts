@@ -13,7 +13,7 @@ export async function createTransaction(amount: number, customer: { name: string
     const response = await fetch("https://api.fedapay.com/v1/transactions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.FEDAPAY_API_KEY}`,
+        "Authorization": `Bearer ${process.env.FEDAPAY_API_SECRET}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -58,7 +58,7 @@ export async function verifyTransaction(transactionId: string) {
   try {
     const response = await fetch(`https://api.fedapay.com/v1/transactions/${transactionId}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.FEDAPAY_API_KEY}`,
+        "Authorization": `Bearer ${process.env.FEDAPAY_API_SECRET}`,
         "Content-Type": "application/json",
       },
     })

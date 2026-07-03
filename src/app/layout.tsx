@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import PWAProvider from "@/components/PWAProvider";
-import ExitPopup from "@/components/ExitPopup";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
@@ -30,10 +28,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" href="/images/logo-icon.jpg" />
       </head>
       <body className="min-h-screen flex flex-col">
-        <PWAProvider />
+        
         <Navbar />
         <main className="flex-1">{children}</main>
-        <ExitPopup />
+        
         <Footer />
       </body>
     </html>

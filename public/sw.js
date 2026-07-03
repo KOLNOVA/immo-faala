@@ -1,23 +1,7 @@
-const CACHE_NAME = "immo-faala-v1";
-
-const urlsToCache = [
-  "/",
-  "/recherche",
-  "/compte/connexion",
-  "/compte/inscription",
-  "/images/logo-icon.jpg",
-];
+const CACHE_NAME = "immo-faala-v2";
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-  );
-});
-
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => response || fetch(event.request))
-  );
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -30,17 +14,6 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Notifications push
-self.addEventListener("push", (event) => {
-  const data = event.data?.json() || {};
-  self.registration.showNotification(data.title || "Immo-Faala", {
-    body: data.body || "Vous avez une nouvelle notification",
-    icon: "/images/logo-icon.jpg",
-    badge: "/images/logo-icon.jpg",
-  });
-});
-
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-  event.waitUntil(clients.openWindow("/"));
+self.addEventListener("fetch", (event) => {
+  event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
 });
