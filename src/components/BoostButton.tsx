@@ -9,17 +9,21 @@ export default function BoostButton({ listingId }: { listingId: string }) {
 
   async function handleBoost() {
     setLoading(true);
-    const res = await fetch("/api/payment/boost", {
-      method: "POST",
-      body: JSON.stringify({ listingId }),
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await res.json();
+    try {
+      const res = await fetch("/api/payment/boost", {
+        method: "POST",
+        body: JSON.stringify({ listingId }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
 
-    if (data.redirect) {
-      window.location.href = data.redirect;
-    } else if (data.success) {
-      router.push("/dashboard");
+      if (data.redirect) {
+        window.location.href = data.redirect;
+      } else if (data.success) {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
     }
     setLoading(false);
   }

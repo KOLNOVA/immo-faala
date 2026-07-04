@@ -8,16 +8,21 @@ export default function BadgePage() {
 
   async function handleBadge() {
     setLoading(true);
-    const res = await fetch("/api/payment/badge", { method: "POST" });
-    const data = await res.json();
+    try {
+      const res = await fetch("/api/payment/badge", { method: "POST" });
+      const data = await res.json();
 
-    if (data.redirect) {
-      window.location.href = data.redirect;
-    } else if (data.success) {
-      setMessage("✅ Badge Premium activé ! Redirection...");
-      setTimeout(() => window.location.href = "/dashboard", 2000);
-    } else {
-      setMessage("❌ " + (data.error || "Erreur"));
+      if (data.redirect) {
+        // Redirection vers Fedapay pour paiement
+        window.location.href = data.redirect;
+      } else if (data.success) {
+        setMessage("✅ Badge Premium activé ! Redirection...");
+        setTimeout(() => window.location.href = "/dashboard", 2000);
+      } else {
+        setMessage("❌ " + (data.error || "Erreur"));
+      }
+    } catch (error) {
+      setMessage("❌ Erreur réseau");
     }
     setLoading(false);
   }
@@ -36,9 +41,9 @@ export default function BadgePage() {
           {loading ? "Paiement..." : "Payer 500 FCFA via Fedapay"}
         </button>
         {message && <p style={{ marginTop: 10 }}>{message}</p>}
-        {process.env.NEXT_PUBLIC_FEDAPAY_SANDBOX === "true" && (
-        <p style={{ marginTop: 10, color: "#e67e22" }}>⚠️ Mode sandbox activé</p>
-      )}
+        <p style={{ marginTop: 10, color: "#e67e22" }}>
+          {process.env.NEXT_PUBLIC_FEDAPAY_SANDBOX === "true" && "⚠️ Mode sandbox activé"}
+        </p>
         <p style={{ marginTop: 15 }}><a href="/dashboard">Retour au dashboard</a></p>
       </div>
     </div>

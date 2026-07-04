@@ -33,13 +33,14 @@ export default function CompareList() {
   }
 
   const features = [
-    { label: "Prix", key: "price", format: (v: number) => `${v?.toLocaleString()} FCFA` },
-    { label: "Ville", key: "city" },
-    { label: "Quartier", key: "district" },
-    { label: "Type", key: "propertyType" },
-    { label: "Chambres", key: "rooms" },
-    { label: "Meublé", key: "furnished", format: (v: boolean) => v ? "✅ Oui" : "❌ Non" },
-    { label: "Caution", key: "caution", format: (v: number) => v ? `${v.toLocaleString()} FCFA` : "-" },
+    { label: "Prix", render: (l: any) => `${l.price?.toLocaleString()} FCFA` },
+    { label: "Ville", render: (l: any) => l.city || "-" },
+    { label: "Quartier", render: (l: any) => l.district || "-" },
+    { label: "Type", render: (l: any) => l.propertyType || "-" },
+    { label: "Chambres", render: (l: any) => l.rooms || "-" },
+    { label: "Meublé", render: (l: any) => l.furnished ? "✅ Oui" : "❌ Non" },
+    { label: "Caution", render: (l: any) => l.caution ? `${l.caution.toLocaleString()} FCFA` : "-" },
+    { label: "Avance", render: (l: any) => l.advance ? `${l.advance.toLocaleString()} FCFA` : "-" },
   ];
 
   return (
@@ -58,12 +59,12 @@ export default function CompareList() {
           </tr>
         </thead>
         <tbody>
-          {features.map((f) => (
-            <tr key={f.key} style={{ borderBottom: "1px solid #eee" }}>
+          {features.map((f, i) => (
+            <tr key={i} style={{ borderBottom: "1px solid #eee" }}>
               <td style={{ padding: 12, fontWeight: 600 }}>{f.label}</td>
               {listings.map((l: any) => (
                 <td key={l.id} style={{ padding: 12, textAlign: "center" }}>
-                  {f.format ? f.format(l[f.key]) : l[f.key] || "-"}
+                  {f.render(l)}
                 </td>
               ))}
             </tr>
