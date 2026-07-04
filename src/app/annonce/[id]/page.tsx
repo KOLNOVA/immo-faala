@@ -1,3 +1,4 @@
+import { formatPrice } from "@/lib/format";
 import { supabase } from "@/lib/supabase"
 import Link from "next/link"
 import FavoriteButton from "@/components/FavoriteButton"
@@ -53,7 +54,7 @@ export default async function ListingDetail({ params }: { params: Promise<{ id: 
           <FavoriteButton listingId={listing.id} />
         </div>
 
-        <p className="detail-price" style={{ fontSize: "2em", color: "#27ae60", fontWeight: 700, margin: "15px 0" }}>{listing.price?.toLocaleString()} FCFA</p>
+        <p className="detail-price" style={{ fontSize: "2em", color: "#27ae60", fontWeight: 700, margin: "15px 0" }}>{formatPrice(listing.price)} FCFA</p>
         <p className="detail-location" style={{ color: "#7f8c8d", fontSize: "1.1em" }}>📍 {listing.city}{listing.district ? ` - ${listing.district}` : ""}</p>
 
         <div style={{ display: "flex", gap: 15, color: "#999", fontSize: "0.9em", margin: "10px 0" }}>

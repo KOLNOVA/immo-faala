@@ -1,3 +1,4 @@
+import { formatPrice } from "@/lib/format";
 import { supabase } from "@/lib/supabase"
 import InfiniteScroll from "@/components/InfiniteScroll"
 

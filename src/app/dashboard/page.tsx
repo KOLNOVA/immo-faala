@@ -1,3 +1,4 @@
+import { formatPrice } from "@/lib/format";
 import { auth } from "@/lib/auth"
 import { supabase } from "@/lib/supabase"
 import Link from "next/link"
@@ -68,7 +69,7 @@ export default async function DashboardPage() {
               {listings.map((listing: any) => (
                 <tr key={listing.id}>
                   <td>{listing.title?.length > 30 ? listing.title.substring(0, 30) + "..." : listing.title}</td>
-                  <td>{listing.price?.toLocaleString()} FCFA</td>
+                  <td>{formatPrice(listing.price)} FCFA</td>
                   <td>{listing.city}</td>
                   <td>👁 {listing.viewsCount || 0}</td>
                   <td>

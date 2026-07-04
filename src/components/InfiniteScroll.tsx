@@ -1,3 +1,4 @@
+import { formatPrice } from "@/lib/format";
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -92,7 +93,7 @@ export default function InfiniteScroll({
             )}
             <div className="listing-info">
               <h3>{listing.title?.length > 40 ? listing.title.substring(0, 40) + "..." : listing.title}</h3>
-              <p className="listing-price">{listing.price?.toLocaleString()} FCFA</p>
+              <p className="listing-price">{formatPrice(listing.price)} FCFA</p>
               <p className="listing-location">{listing.city} - {listing.district}</p>
               <p className="listing-type">{listing.propertyType} - {listing.rooms} chambre(s)</p>
               <span className="btn btn-small">Voir détails</span>
