@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import AdminActions from "@/components/AdminActions"
+import Link from "next/link"
 
 export default async function AdminPage() {
   const session = await auth()
