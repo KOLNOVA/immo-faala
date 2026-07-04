@@ -1,16 +1,16 @@
 import { supabase } from "@/lib/supabase"
 import Link from "next/link"
+import FavoriteButton from "@/components/FavoriteButton"
+import ShareButton from "@/components/ShareButton"
 
-export default async function ListingDetail({ params }: { params: any }) {
-  const { id } = await params;
-
+export default async function ListingDetail({ params }: { params: { id: string } }) {
   const { data: listing } = await supabase
     .from("Listing")
     .select("*, images:ListingImage(*), owner:User(*)")
-    .eq("id", id)
-    .single();
+    .eq("id", params.id)
+    .single()
 
-  if (!listing) return <p style={{ textAlign: "center", padding: 50 }}>Annonce introuvable.</p>;
+  if (!listing) return <p style={{ textAlign: "center", padding: 50 }}>Annonce introuvable.</p>
 
   return (
     <div className="detail-container" style={{ maxWidth: 1100, margin: "30px auto", padding: "0 20px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 30 }}>
@@ -48,6 +48,7 @@ export default async function ListingDetail({ params }: { params: any }) {
         <div className="detail-header" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <h1 style={{ margin: 0 }}>{listing.title}</h1>
           {listing.isVerified && <span className="badge-verified" style={{ position: "static" }}>🏅 Vérifié</span>}
+          <FavoriteButton listingId={listing.id} />
         </div>
 
         <p className="detail-price" style={{ fontSize: "2em", color: "#27ae60", fontWeight: 700, margin: "15px 0" }}>{listing.price?.toLocaleString()} FCFA</p>
@@ -98,9 +99,7 @@ export default async function ListingDetail({ params }: { params: any }) {
                 💬 WhatsApp
               </a>
             )}
-            <a href={`https://wa.me/?text=${encodeURIComponent(`${listing.title} - ${listing.price} FCFA`)}`} target="_blank" className="btn btn-secondary" style={{ textAlign: "center" }}>
-              📤 Partager
-            </a>
+            <ShareButton title={listing.title} price={listing.price} url={`https://immo-faala.netlify.app/annonce/${listing.id}`} />
           </div>
         </div>
 

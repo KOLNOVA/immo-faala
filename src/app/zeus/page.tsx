@@ -61,6 +61,30 @@ export default async function AdminPage() {
       </div>
 
       <div className="listings-table" style={{ marginTop: 30 }}>
+        <h2><Link href="/zeus/annonces" style={{ color: "#1a2a3a", textDecoration: "none" }}>📋 Toutes les annonces →</Link></h2>
+        <table>
+          <thead><tr><th>Titre</th><th>Propriétaire</th><th>Prix</th><th>Ville</th><th>Statut</th><th>Date</th></tr></thead>
+          <tbody>
+            {/* Ici on peut afficher les 10 dernières comme avant, ou un résumé */}
+            {pendingListingsData && pendingListingsData.length > 0 ? (
+              pendingListingsData.slice(0,5).map((l: any) => (
+                <tr key={l.id}>
+                  <td>{l.title?.substring(0, 30)}</td>
+                  <td>{l.owner?.phone}</td>
+                  <td>{l.price?.toLocaleString()} FCFA</td>
+                  <td>{l.city}</td>
+                  <td><span className={`status-${l.status}`}>{l.status}</span></td>
+                  <td>{new Date(l.createdAt).toLocaleDateString("fr-FR")}</td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan={6}>Aucune annonce</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="listings-table" style={{ marginTop: 30 }}>
         <h2>🚨 Signalements non résolus ({reports || 0})</h2>
         {reportsData && reportsData.length > 0 ? (
           <table>
