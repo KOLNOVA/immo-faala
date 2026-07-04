@@ -1,6 +1,6 @@
-import { formatPrice } from "@/lib/format";
 "use client";
 
+import { formatPrice } from "@/lib/format";
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 

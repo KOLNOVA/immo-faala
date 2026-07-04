@@ -1,7 +1,9 @@
 import { supabase } from "@/lib/supabase"
 import { redirect } from "next/navigation"
 
-export default async function ReportPage({ params }: { params: { id: string } }) {
+export default async function ReportPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   async function report(formData: FormData) {
     "use server"
     const reason = formData.get("reason") as string
@@ -12,13 +14,13 @@ export default async function ReportPage({ params }: { params: { id: string } })
     await supabase.from("Report").insert({
       reason,
       comment,
-      listingId: params.id,
+      listingId: id,
     })
 
-    redirect(`/annonce/${params.id}`)
+    redirect(`/annonce/${id}`)
   }
 
-  const { data: listing } = await supabase.from("Listing").select("title").eq("id", params.id).single()
+  const { data: listing } = await supabase.from("Listing").select("title").eq("id", id).single()
 
   return (
     <div className="form-container" style={{ maxWidth: 500 }}>
@@ -52,7 +54,7 @@ export default async function ReportPage({ params }: { params: { id: string } })
         </form>
 
         <p style={{ marginTop: 15, textAlign: "center" }}>
-          <a href={`/annonce/${params.id}`}>Retour à l&apos;annonce</a>
+          <a href={`/annonce/${id}`}>Retour à l&apos;annonce</a>
         </p>
       </div>
     </div>
