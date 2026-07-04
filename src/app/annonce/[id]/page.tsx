@@ -1,8 +1,8 @@
-import { formatPrice } from "@/lib/format";
 import { supabase } from "@/lib/supabase"
 import Link from "next/link"
 import FavoriteButton from "@/components/FavoriteButton"
 import ShareButton from "@/components/ShareButton"
+import { formatPrice } from "@/lib/format"
 
 export default async function ListingDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -48,8 +48,8 @@ export default async function ListingDetail({ params }: { params: Promise<{ id: 
 
       {/* Infos */}
       <div>
-        <div className="detail-header" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <h1 style={{ margin: 0 }}>{listing.title}</h1>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+          <h1 style={{ margin: 0, flex: 1 }}>{listing.title}</h1>
           {listing.isVerified && <span className="badge-verified" style={{ position: "static" }}>🏅 Vérifié</span>}
           <FavoriteButton listingId={listing.id} />
         </div>
@@ -66,8 +66,8 @@ export default async function ListingDetail({ params }: { params: Promise<{ id: 
           <div>🏠 <strong>{listing.propertyType}</strong></div>
           <div>🛏 <strong>{listing.rooms}</strong> chambre(s)</div>
           <div>🪑 {listing.furnished ? "Meublé" : "Non meublé"}</div>
-          {listing.caution && <div>💰 Caution : <strong>{listing.caution.toLocaleString()} FCFA</strong></div>}
-          {listing.advance && <div>📋 Avance : <strong>{listing.advance.toLocaleString()} FCFA</strong></div>}
+          {listing.caution && <div>💰 Caution : <strong>{formatPrice(listing.caution)} FCFA</strong></div>}
+          {listing.advance && <div>📋 Avance : <strong>{formatPrice(listing.advance)} FCFA</strong></div>}
           {listing.availableDate && <div>📆 Disponible le <strong>{new Date(listing.availableDate).toLocaleDateString("fr-FR")}</strong></div>}
         </div>
 
