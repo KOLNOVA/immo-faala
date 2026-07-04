@@ -3,11 +3,13 @@ import Link from "next/link"
 import FavoriteButton from "@/components/FavoriteButton"
 import ShareButton from "@/components/ShareButton"
 
-export default async function ListingDetail({ params }: { params: { id: string } }) {
+export default async function ListingDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   const { data: listing } = await supabase
     .from("Listing")
     .select("*, images:ListingImage(*), owner:User(*)")
-    .eq("id", params.id)
+    .eq("id", id)
     .single()
 
   if (!listing) return <p style={{ textAlign: "center", padding: 50 }}>Annonce introuvable.</p>
