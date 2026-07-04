@@ -29,11 +29,18 @@ export default function FavoriteButton({ listingId }: { listingId: string }) {
         background: "none",
         border: "none",
         cursor: "pointer",
-        fontSize: "1.5em",
+        fontSize: "1em",
+        display: "flex",
+        alignItems: "center",
+        gap: "4px",
+        color: "#333",
       }}
       title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
     >
-      {isFavorite ? "❤️" : "🤍"}
+      <span style={{ fontSize: "1.3em" }}>{isFavorite ? "❤️" : "🤍"}</span>
+      <span style={{ fontSize: "0.85em", color: "#666" }}>
+        {isFavorite ? "Retiré des favoris" : "Ajouter aux favoris"}
+      </span>
     </button>
   );
 }
