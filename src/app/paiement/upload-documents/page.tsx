@@ -7,11 +7,11 @@ export default function UploadDocsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const isSandbox = process.env.NEXT_PUBLIC_FEDAPAY_SANDBOX === "true";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-
     const formData = new FormData(e.currentTarget);
 
     const res = await fetch("/api/user/upload-docs", {
@@ -44,10 +44,9 @@ export default function UploadDocsPage() {
             <label>Selfie (photo de vous)</label>
             <input type="file" name="selfie" accept="image/*" className="form-input" required />
           </div>
-          {message && (
-            <p style={{ color: message.includes("✅") ? "#27ae60" : "#e74c3c", textAlign: "center", marginBottom: 10 }}>
-              {message}
-            </p>
+          {message && <p style={{ marginTop: 10 }}>{message}</p>}
+          {isSandbox && (
+            <p style={{ marginTop: 10, color: "#e67e22" }}>⚠️ Mode sandbox activé</p>
           )}
           <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={loading}>
             {loading ? "Envoi..." : "Envoyer pour vérification"}
@@ -58,5 +57,5 @@ export default function UploadDocsPage() {
         </p>
       </div>
     </div>
-  );
+  )
 }
