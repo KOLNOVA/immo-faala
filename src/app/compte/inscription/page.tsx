@@ -30,7 +30,12 @@ export default function RegisterPage() {
       isActive: false,
     })
 
-    await storeAndSendOTP(email)
+    const sent = await storeAndSendOTP(email)
+    if (!sent) {
+      // Fallback : si l'email échoue, on active le compte directement
+      await supabase.from("User").update({ isActive: true }).eq("email", email)
+      redirect("/compte/connexion")
+    }
 
     redirect(`/compte/verification?email=${encodeURIComponent(email)}`)
   }
