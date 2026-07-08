@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import PushNotificationButton from "@/components/PushNotificationButton";
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
@@ -69,6 +70,9 @@ export default function MobileMenu() {
                 {link.label}
               </Link>
             ))}
+            <div style={{ padding: "10px 20px", borderTop: "1px solid rgba(255,255,255,0.2)" }}>
+              <PushNotificationButton />
+            </div>
           </div>
         </>
       )}
