@@ -1,11 +1,12 @@
-import { sendWelcomeEmail } from "@/services/welcome-email";
 import { supabase } from "@/lib/supabase"
 import bcrypt from "bcryptjs"
 import { redirect } from "next/navigation"
 import PasswordInput from "@/components/PasswordInput"
 import { storeAndSendOTP } from "@/services/email-otp"
 
-export default function RegisterPage() {
+export default function RegisterPage({ searchParams }: { searchParams?: { parrain?: string } }) {
+  const parrainCode = searchParams?.parrain || ""
+
   async function register(formData: FormData) {
     "use server"
     const phone = formData.get("phone") as string
@@ -15,15 +16,23 @@ export default function RegisterPage() {
     const email = formData.get("email") as string
     const whatsapp = formData.get("whatsapp_number") as string
     const displayName = formData.get("display_name") as string
+    const parrain = formData.get("parrain") as string
 
     if (password !== password2) return
     if (password.length < 8) return
 
     const passwordHash = await bcrypt.hash(password, 12)
-
-    // Date d'expiration : 30 jours à partir de maintenant
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 30)
+
+    // Trouver le parrain si le code est fourni
+    let parrainId = null
+    if (parrain) {
+      const { data: parrainUser } = await supabase.from("User").select("id").eq("id", parrain).single()
+      if (parrainUser) {
+        parrainId = parrainUser.id
+      }
+    }
 
     await supabase.from("User").insert({
       phone,
@@ -34,14 +43,13 @@ export default function RegisterPage() {
       passwordHash,
       isActive: false,
       expiresAt: expiresAt.toISOString(),
+      parrainId: parrainId,
     })
 
     const sent = await storeAndSendOTP(email)
     if (!sent) {
-      // Si l'email échoue, on active le compte directement
       await supabase.from("User").update({ isActive: true }).eq("email", email)
-      redirect("/compte/connexion");
-    try { await sendWelcomeEmail(email, displayName); } catch(e) {}
+      redirect("/compte/connexion")
     }
 
     redirect(`/compte/verification?email=${encodeURIComponent(email)}`)
@@ -51,6 +59,9 @@ export default function RegisterPage() {
     <div className="form-container">
       <h1>Inscription Annonceur</h1>
       <form action={register} className="listing-form">
+        {parrainCode && (
+          <input type="hidden" name="parrain" value={parrainCode} />
+        )}
         <div className="form-group">
           <label>Téléphone principal *</label>
           <input type="text" name="phone" required placeholder="Ex: 22997000000" className="form-input" autoFocus />
