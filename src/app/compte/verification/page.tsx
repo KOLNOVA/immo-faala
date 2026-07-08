@@ -1,10 +1,10 @@
-import { sendWelcomeEmail } from "@/services/welcome-email";
 import { supabase } from "@/lib/supabase"
 import { redirect } from "next/navigation"
 import { verifyOTP, storeAndSendOTP } from "@/services/email-otp"
 
-export default function VerifyPage({ searchParams }: { searchParams: { email?: string; resend?: string } }) {
-  const email = searchParams?.email || ""
+export default async function VerifyPage({ searchParams }: { searchParams?: Promise<{ email?: string; resend?: string }> }) {
+  const sp = await searchParams
+  const email = sp?.email || ""
 
   async function verify(formData: FormData) {
     "use server"
@@ -14,9 +14,12 @@ export default function VerifyPage({ searchParams }: { searchParams: { email?: s
     const result = await verifyOTP(email, code)
 
     if (result.success) {
+      // Activer le compte dans Supabase
       await supabase.from("User").update({ isActive: true }).eq("email", email)
-      redirect("/compte/connexion")
+      // Rediriger vers la connexion avec un message de succès
+      redirect("/compte/connexion?verified=true")
     } else {
+      // Rediriger vers la même page avec l'erreur
       redirect(`/compte/verification?email=${encodeURIComponent(email)}&error=${encodeURIComponent(result.message)}`)
     }
   }
@@ -26,7 +29,7 @@ export default function VerifyPage({ searchParams }: { searchParams: { email?: s
     if (email) {
       await storeAndSendOTP(email)
     }
-    redirect(`/compte/verification?email=${encodeURIComponent(email)}`)
+    redirect(`/compte/verification?email=${encodeURIComponent(email)}&resent=1`)
   }
 
   return (
