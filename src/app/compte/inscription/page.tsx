@@ -1,3 +1,4 @@
+import { sendWelcomeEmail } from "@/services/welcome-email";
 import { supabase } from "@/lib/supabase"
 import bcrypt from "bcryptjs"
 import { redirect } from "next/navigation"
@@ -20,6 +21,10 @@ export default function RegisterPage() {
 
     const passwordHash = await bcrypt.hash(password, 12)
 
+    // Date d'expiration : 30 jours à partir de maintenant
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 30)
+
     await supabase.from("User").insert({
       phone,
       username,
@@ -28,13 +33,15 @@ export default function RegisterPage() {
       displayName,
       passwordHash,
       isActive: false,
+      expiresAt: expiresAt.toISOString(),
     })
 
     const sent = await storeAndSendOTP(email)
     if (!sent) {
-      // Fallback : si l'email échoue, on active le compte directement
+      // Si l'email échoue, on active le compte directement
       await supabase.from("User").update({ isActive: true }).eq("email", email)
-      redirect("/compte/connexion")
+      redirect("/compte/connexion");
+    try { await sendWelcomeEmail(email, displayName); } catch(e) {}
     }
 
     redirect(`/compte/verification?email=${encodeURIComponent(email)}`)

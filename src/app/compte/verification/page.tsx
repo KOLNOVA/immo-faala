@@ -1,3 +1,4 @@
+import { sendWelcomeEmail } from "@/services/welcome-email";
 import { supabase } from "@/lib/supabase"
 import { redirect } from "next/navigation"
 import { verifyOTP, storeAndSendOTP } from "@/services/email-otp"
