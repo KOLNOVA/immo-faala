@@ -95,7 +95,7 @@ export default function CGU() {
 
       <h2>15. Contact</h2>
       <p>Pour toute question relative aux présentes CGU :</p>
-      <p>Email : <strong>contact@immo-faala.bj</strong></p>
+      <p>Email : <strong>contact@immofaala.com</strong></p>
       <p>KOLNOVA — RB/COT/26 A 118296</p>
     </div>
   );

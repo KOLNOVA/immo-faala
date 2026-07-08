@@ -9,7 +9,7 @@ export default function MentionsLegales() {
       <p>Directeur de la publication : GOZO GOPAL.</p>
       
       <h2>Contact</h2>
-      <p>Email : contact@immo-faala.bj</p>
+      <p>Email : contact@immofaala.com</p>
       
       
       <h2>Propriété Intellectuelle</h2>
