@@ -1,3 +1,4 @@
+import { sendPaymentConfirmation } from "@/services/payment-confirmation";
 import { auth } from "@/lib/auth"
 import { supabase } from "@/lib/supabase"
 import { createTransaction } from "@/services/fedapay"
@@ -20,32 +21,62 @@ export async function POST() {
 
   if (result.success) {
     await supabase.from("User").update({
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       isPremium: true,
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       premiumDate: new Date().toISOString(),
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
     }).eq("id", session.user.id)
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
 
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
     await supabase.from("Transaction").insert({
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       type: "verification",
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       amount: 500,
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       status: "success",
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       transactionId: result.transactionId,
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       userId: session.user.id,
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       completedAt: new Date().toISOString(),
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
     })
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
 
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
     return Response.json({ success: true, message: "Badge Premium activé" })
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
   }
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
 
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
   if (result.paymentUrl) {
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
     await supabase.from("Transaction").insert({
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       type: "verification",
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       amount: 500,
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       status: "pending",
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       transactionId: result.transactionId,
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
       userId: session.user.id,
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
     })
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
     return Response.json({ redirect: result.paymentUrl })
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
   }
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
 
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
   return Response.json({ error: result.message }, { status: 500 })
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
 }
+    try { await sendPaymentConfirmation(session.user?.email || "", "Badge Premium", 500); } catch(e) {}
