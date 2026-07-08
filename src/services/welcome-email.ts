@@ -10,8 +10,10 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-export async function sendWelcomeEmail(email: string, displayName: string | null) {
+export async function sendWelcomeEmail(email: string, displayName: string | null, parrainCode?: string) {
   const name = displayName || "utilisateur"
+  const lienParrainage = `https://immofaala.com/compte/inscription?parrain=${parrainCode || ""}`
+
   await transporter.sendMail({
     from: process.env.DEFAULT_FROM_EMAIL,
     to: email,
@@ -33,6 +35,10 @@ export async function sendWelcomeEmail(email: string, displayName: string | null
           
           <h3>🚀 Booster une annonce</h3>
           <p>Pour mettre votre annonce en avant, utilisez l'option <strong>Boost</strong>. Votre annonce apparaîtra en tête des résultats pendant 7 jours.</p>
+          
+          <h3>🎁 Programme de Parrainage</h3>
+          <p>Invitez vos amis propriétaires à s'inscrire sur Immo-Faala. Lorsque <strong>8 de vos filleuls</strong> auront publié au moins une annonce, vous recevrez <strong>1 boost gratuit</strong> (valeur 1000 FCFA) !</p>
+          <p>Voici votre lien de parrainage personnel : <a href="${lienParrainage}">${lienParrainage}</a></p>
           
           <h3>📊 Suivre vos performances</h3>
           <p>Dans votre Dashboard, vous pouvez voir le nombre de vues de chaque annonce, les comparer, et exporter vos données.</p>
