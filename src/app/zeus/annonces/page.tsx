@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { supabase } from "@/lib/supabase"
+import AdminActions from "@/components/AdminActions"
 import Link from "next/link"
 
 export default async function AllListingsPage() {
@@ -38,6 +39,7 @@ export default async function AllListingsPage() {
                   <td>{new Date(l.createdAt).toLocaleDateString("fr-FR")}</td>
                   <td>
                     <Link href={`/annonce/${l.id}`} className="btn btn-small">Voir</Link>
+                    <AdminActions type="listing" id={l.id} action="delete" label="🗑️ Supprimer" />
                   </td>
                 </tr>
               ))}
