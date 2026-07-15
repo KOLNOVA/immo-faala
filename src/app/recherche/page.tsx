@@ -1,32 +1,31 @@
-import { formatPrice } from "@/lib/format";
 import { supabase } from "@/lib/supabase"
 import InfiniteScroll from "@/components/InfiniteScroll"
+import { formatPrice } from "@/lib/format"
 
-export default async function SearchPage({ searchParams }: { searchParams: any }) {
-  const params = await searchParams;
-  const query = params?.q || "";
-  const city = params?.city || "";
-  const district = params?.district || "";
-  const propertyType = params?.type || "";
-  const minPrice = params?.min_price || "";
-  const maxPrice = params?.max_price || "";
-  const rooms = params?.rooms || "";
+export default async function SearchPage({ searchParams }: { searchParams: Promise<{ [key: string]: string }> }) {
+  const params = await searchParams
+  const query = params?.q || ""
+  const city = params?.city || ""
+  const district = params?.district || ""
+  const propertyType = params?.type || ""
+  const minPrice = params?.min_price || ""
+  const maxPrice = params?.max_price || ""
+  const rooms = params?.rooms || ""
 
-  let supabaseQuery = supabase.from("Listing").select("*, images:ListingImage(*)", { count: "exact" }).eq("status", "active");
+  let supabaseQuery = supabase.from("Listing").select("*, images:ListingImage(*)", { count: "exact" }).eq("status", "active")
 
-  if (query) supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,description.ilike.%${query}%,city.ilike.%${query}%,district.ilike.%${query}%`);
-  if (city) supabaseQuery = supabaseQuery.ilike("city", `%${city}%`);
-  if (district) supabaseQuery = supabaseQuery.ilike("district", `%${district}%`);
-  if (propertyType) supabaseQuery = supabaseQuery.eq("propertyType", propertyType);
-  if (minPrice) supabaseQuery = supabaseQuery.gte("price", parseInt(minPrice));
-  if (maxPrice) supabaseQuery = supabaseQuery.lte("price", parseInt(maxPrice));
-  if (rooms) supabaseQuery = supabaseQuery.gte("rooms", parseInt(rooms));
+  if (query) supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,description.ilike.%${query}%,city.ilike.%${query}%,district.ilike.%${query}%`)
+  if (city) supabaseQuery = supabaseQuery.ilike("city", `%${city}%`)
+  if (district) supabaseQuery = supabaseQuery.ilike("district", `%${district}%`)
+  if (propertyType) supabaseQuery = supabaseQuery.eq("propertyType", propertyType)
+  if (minPrice) supabaseQuery = supabaseQuery.gte("price", parseInt(minPrice))
+  if (maxPrice) supabaseQuery = supabaseQuery.lte("price", parseInt(maxPrice))
+  if (rooms) supabaseQuery = supabaseQuery.gte("rooms", parseInt(rooms))
 
-  const { data: firstPage, count: totalCount } = await supabaseQuery.order("createdAt", { ascending: false }).range(0, 11);
+  const { data: firstPage, count: totalCount } = await supabaseQuery.order("createdAt", { ascending: false }).range(0, 11)
 
-  const hasNext = totalCount ? totalCount > 12 : false;
-
-  const searchFilters = { q: query, city, district, type: propertyType, min_price: minPrice, max_price: maxPrice, rooms };
+  const hasNext = totalCount ? totalCount > 12 : false
+  const searchFilters = { q: query, city, district, type: propertyType, min_price: minPrice, max_price: maxPrice, rooms }
 
   return (
     <div style={{ maxWidth: 1200, margin: "30px auto", padding: "0 20px" }}>
@@ -34,7 +33,23 @@ export default async function SearchPage({ searchParams }: { searchParams: any }
 
       <form action="/recherche" method="GET" className="search-bar" style={{ margin: "0 0 30px 0", position: "static" }}>
         <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
-          <input type="text" name="q" placeholder="Mot-clé..." defaultValue={query} className="search-input" />
+          <input type="text" name="q" placeholder="Mot-clé..." defaultValue={query} list="suggestions" className="search-input" />
+          <datalist id="suggestions">
+            <option value="Maison" />
+            <option value="Appartement" />
+            <option value="Studio" />
+            <option value="Chambre" />
+            <option value="Parcelle" />
+            <option value="Meublé" />
+            <option value="Cotonou" />
+            <option value="Akpakpa" />
+            <option value="Fidjrosse" />
+            <option value="Ganhi" />
+            <option value="Haie Vive" />
+            <option value="Lomé" />
+            <option value="Abidjan" />
+            <option value="Ouagadougou" />
+          </datalist>
           <input type="text" name="city" placeholder="Ville" defaultValue={city} className="search-input" />
           <input type="text" name="district" placeholder="Quartier" defaultValue={district} className="search-input" />
         </div>

@@ -116,7 +116,7 @@ export default async function AdminPage() {
           <tbody>
             {users?.map((u: any) => (
               <tr key={u.id}>
-                <td>{u.phone}</td>
+                <td><Link href={}>{u.phone}</Link></td>
                 <td>{u.displayName || u.username || "-"}</td>
                 <td>{u.email || "-"}</td>
                 <td>{u.isActive ? "✅" : "❌"}</td>
