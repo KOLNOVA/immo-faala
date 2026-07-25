@@ -65,7 +65,6 @@ export default async function AdminPage() {
         <table>
           <thead><tr><th>Titre</th><th>Propriétaire</th><th>Prix</th><th>Ville</th><th>Statut</th><th>Date</th></tr></thead>
           <tbody>
-            {/* Ici on peut afficher les 10 dernières comme avant, ou un résumé */}
             {pendingListingsData && pendingListingsData.length > 0 ? (
               pendingListingsData.slice(0,5).map((l: any) => (
                 <tr key={l.id}>
@@ -116,7 +115,7 @@ export default async function AdminPage() {
           <tbody>
             {users?.map((u: any) => (
               <tr key={u.id}>
-                <td><Link href={}>{u.phone}</Link></td>
+                <td><Link href={`/zeus/users/${u.id}`}>{u.phone}</Link></td>
                 <td>{u.displayName || u.username || "-"}</td>
                 <td>{u.email || "-"}</td>
                 <td>{u.isActive ? "✅" : "❌"}</td>
