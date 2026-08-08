@@ -4,7 +4,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { storeAndSendOTP } from "@/services/email-otp";
 
-function VerifyContent() {
+function VerificationContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const email = searchParams.get("email") || "";
@@ -24,13 +24,7 @@ function VerifyContent() {
     const result = await res.json();
 
     if (result.success) {
-      // Activer le compte
-      await fetch("/api/user/verify", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-        headers: { "Content-Type": "application/json" },
-      });
-      router.push("/compte/connexion?verified=true");
+      router.push(`/compte/mot-de-passe-oublie/nouveau?email=${encodeURIComponent(email)}`);
     } else {
       setMessage(result.message);
     }
@@ -46,17 +40,20 @@ function VerifyContent() {
     return (
       <div className="form-container">
         <h1>Vérification</h1>
-        <p>Aucun email spécifié. Veuillez vous inscrire d&apos;abord.</p>
+        <p>Aucun email spécifié. Veuillez d'abord demander un code.</p>
       </div>
     );
   }
 
+  const emailParts = email.split("@")
+  const maskedEmail = emailParts[0].substring(0, 2) + "***@" + emailParts[1]
+
   return (
     <div className="form-container">
-      <h1>📱 Vérification du compte</h1>
+      <h1>📱 Vérification du code</h1>
       <div className="listing-form">
         <p style={{ textAlign: "center", marginBottom: 10 }}>
-          Un code a été envoyé à : <strong>{email}</strong>
+          Un code a été envoyé à : <strong>{maskedEmail}</strong>
         </p>
         <p style={{ textAlign: "center", color: "#999", marginBottom: 20 }}>
           Vérifiez votre boîte de réception (et les spams).
@@ -79,9 +76,17 @@ function VerifyContent() {
               autoFocus
             />
           </div>
-          {message && <p style={{ color: message.includes("incorrect") || message.includes("expiré") || message.includes("tentatives") ? "#e74c3c" : "#27ae60", textAlign: "center", marginBottom: 10 }}>{message}</p>}
+          {message && (
+            <p style={{
+              color: message.includes("✅") ? "#27ae60" : "#e74c3c",
+              textAlign: "center",
+              marginBottom: 10
+            }}>
+              {message}
+            </p>
+          )}
           <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={loading}>
-            {loading ? "Vérification..." : "Vérifier mon compte"}
+            {loading ? "Vérification..." : "Vérifier le code"}
           </button>
         </form>
 
@@ -98,7 +103,7 @@ function VerifyContent() {
 export default function VerifyPage() {
   return (
     <Suspense fallback={<div className="form-container"><p>Chargement...</p></div>}>
-      <VerifyContent />
+      <VerificationContent />
     </Suspense>
   );
 }

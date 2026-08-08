@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PasswordResetRequest() {
+  const router = useRouter();
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,6 +21,14 @@ export default function PasswordResetRequest() {
 
     const data = await res.json();
     setMessage(data.message);
+
+    // Rediriger vers la page de vérification si l'email a été envoyé
+    if (data.redirect) {
+      setTimeout(() => {
+        router.push(data.redirect);
+      }, 1500); // Petit délai pour que l'utilisateur voie le message
+    }
+
     setLoading(false);
   }
 
@@ -27,7 +37,7 @@ export default function PasswordResetRequest() {
       <h1>🔑 Mot de passe oublié</h1>
       <div className="listing-form">
         <p style={{ marginBottom: 20, textAlign: "center" }}>
-          Entrez votre numéro de téléphone. Vous recevrez un code de réinitialisation.
+          Entrez votre numéro de téléphone. Un code de réinitialisation sera envoyé à votre adresse email.
         </p>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -43,7 +53,14 @@ export default function PasswordResetRequest() {
             />
           </div>
           {message && (
-            <p style={{ color: message.includes("✅") ? "#27ae60" : "#e74c3c", textAlign: "center", marginBottom: 10 }}>
+            <p style={{
+              color: message.includes("✅") ? "#27ae60" : "#e74c3c",
+              textAlign: "center",
+              marginBottom: 10,
+              background: message.includes("✅") ? "#d4edda" : "#f8d7da",
+              padding: 10,
+              borderRadius: 5
+            }}>
               {message}
             </p>
           )}

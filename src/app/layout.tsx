@@ -1,3 +1,4 @@
+import InstallBanner from "@/components/InstallBanner";
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1">{children}</main>
         <ExitPopup />
         <Footer />
+        <InstallBanner />
       </body>
     </html>
   );

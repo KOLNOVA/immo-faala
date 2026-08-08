@@ -4,8 +4,9 @@ import { redirect } from "next/navigation"
 import PasswordInput from "@/components/PasswordInput"
 import { storeAndSendOTP } from "@/services/email-otp"
 
-export default function RegisterPage({ searchParams }: { searchParams?: { parrain?: string } }) {
-  const parrainCode = searchParams?.parrain || ""
+export default async function RegisterPage({ searchParams }: { searchParams?: Promise<{ parrain?: string }> }) {
+  const sp = await searchParams
+  const parrainCode = sp?.parrain || ""
 
   async function register(formData: FormData) {
     "use server"
@@ -25,7 +26,6 @@ export default function RegisterPage({ searchParams }: { searchParams?: { parrai
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 30)
 
-    // Trouver le parrain si le code est fourni
     let parrainId = null
     if (parrain) {
       const { data: parrainUser } = await supabase.from("User").select("id").eq("id", parrain).single()
