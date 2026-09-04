@@ -23,8 +23,6 @@ export default async function RegisterPage({ searchParams }: { searchParams?: Pr
     if (password.length < 8) return
 
     const passwordHash = await bcrypt.hash(password, 12)
-    const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 30)
 
     let parrainId = null
     if (parrain) {
@@ -42,7 +40,6 @@ export default async function RegisterPage({ searchParams }: { searchParams?: Pr
       displayName,
       passwordHash,
       isActive: false,
-      expiresAt: expiresAt.toISOString(),
       parrainId: parrainId,
     })
 
