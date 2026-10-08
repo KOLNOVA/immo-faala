@@ -16,13 +16,10 @@ export async function POST(request: Request) {
   if (type === "listing") {
     if (action === "approve") await supabase.from("Listing").update({ status: "active" }).eq("id", id)
     if (action === "reject") await supabase.from("Listing").update({ status: "rejected" }).eq("id", id)
-    // Nouvelle action : supprimer définitivement
+    if (action === "reactivate") await supabase.from("Listing").update({ status: "active" }).eq("id", id)
     if (action === "delete") {
-      // D'abord supprimer les images associées
       await supabase.from("ListingImage").delete().eq("listingId", id)
-      // Puis les signalements
       await supabase.from("Report").delete().eq("listingId", id)
-      // Enfin l'annonce
       await supabase.from("Listing").delete().eq("id", id)
     }
   }

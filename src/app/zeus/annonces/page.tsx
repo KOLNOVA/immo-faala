@@ -39,6 +39,9 @@ export default async function AllListingsPage() {
                   <td>{new Date(l.createdAt).toLocaleDateString("fr-FR")}</td>
                   <td>
                     <Link href={`/annonce/${l.id}`} className="btn btn-small">Voir</Link>
+                    {(l.status === "rejected" || l.status === "expired") && (
+                      <AdminActions type="listing" id={l.id} action="reactivate" label="🔄 Réactiver" />
+                    )}
                     <AdminActions type="listing" id={l.id} action="delete" label="🗑️ Supprimer" />
                   </td>
                 </tr>
