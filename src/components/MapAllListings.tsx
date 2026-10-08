@@ -13,6 +13,7 @@ L.Icon.Default.mergeOptions({
 
 export default function MapAllListings({ listings }: { listings: any[] }) {
   const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
 
   useEffect(() => {
     if (mapRef.current) return;
@@ -24,8 +25,20 @@ export default function MapAllListings({ listings }: { listings: any[] }) {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current = [];
+
     listings.forEach((listing) => {
-      if (listing.latitude && listing.longitude) {
+      if (listing.latitude && listing.longitude && mapRef.current) {
         const popupContent = `
           <div style="width:200px">
             ${listing.images?.[0] ? `<img src="${listing.images[0].url}" style="width:100%;height:100px;object-fit:cover;border-radius:5px;margin-bottom:5px" />` : ""}
@@ -35,17 +48,13 @@ export default function MapAllListings({ listings }: { listings: any[] }) {
             <a href="/annonce/${listing.id}" style="color:#3498db">Voir détails</a>
           </div>
         `;
-        L.marker([listing.latitude, listing.longitude])
-          .addTo(map)
+        const marker = L.marker([listing.latitude, listing.longitude])
+          .addTo(mapRef.current)
           .bindPopup(popupContent);
+        markersRef.current.push(marker);
       }
     });
-
-    return () => {
-      map.remove();
-      mapRef.current = null;
-    };
-  }, []);
+  }, [listings]);
 
   return <div id="map-all" style={{ height: "calc(100vh - 100px)", width: "100%" }} />;
 }

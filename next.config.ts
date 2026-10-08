@@ -7,7 +7,7 @@ const securityHeaders = [
   },
   {
     key: "content-security-policy",
-    value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com; font-src 'self'; connect-src 'self' https://yjwgntgfmsezietqkozf.supabase.co https://api.fedapay.com https://api.resend.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
+    value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com https://*.tile.openstreetmap.org https://unpkg.com; font-src 'self'; connect-src 'self' https://yjwgntgfmsezietqkozf.supabase.co https://api.fedapay.com https://api.resend.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
   },
   {
     key: "referrer-policy",
